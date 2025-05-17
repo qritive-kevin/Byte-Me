@@ -5,6 +5,8 @@ import re
 import json
 import PyPDF2
 
+os.environ["PYTHONHASHSEED"] = str(42)
+
 # Set your key here
 DASHSCOPE_API_KEY = "sk-7dd51965d3bd46cba9c3565a7b928e15"
 dashscope.base_http_api_url = "https://dashscope-intl.aliyuncs.com/api/v1"
@@ -46,7 +48,7 @@ def generate_qa_for_student(txt_content, n=10):
         {"role": "system", "content": f"Remember the following text:{txt_content}"},
         {
             "role": "user",
-            "content": f"Generate {n} questions, denoted as Q and answers, denoted as A based on the text above. Each Q&A should have with numberings",
+            "content": f"Generate {n} questions, denoted as Q and answers, denoted as A based on the text above. Each Q&A should have with numberings. The numbering also should be in the format of Q1, Q2, Q3, etc.",
         },
     ]
     response = dashscope.Generation.call(
@@ -95,5 +97,5 @@ def convert_to_qa_json(text, json_path):
 
 pdf_pth = "./Buku Teks Sejarah T4 - Bab 1.pdf"
 summary_txt = get_ai_summary_from_text(pdf_pth)
-qa_txt = generate_qa_for_student(summary_txt, n=10)
-output = convert_to_qa_json(qa_txt, "./demo.json")
+qa_txt = generate_qa_for_student(summary_txt, n=9)
+json_output = convert_to_qa_json(qa_txt, "./demo.json")
