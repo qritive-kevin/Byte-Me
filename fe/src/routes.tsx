@@ -9,6 +9,10 @@ import AboutUsPage from "./pages/AboutUsPage";
 import LoginPage from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
 import StudentBotPage from "./pages/StudentBotPage";
+import TeacherListingPage from "./pages/TeacherListingPage";
+import TeacherUploadPage from "./pages/TeacherUploadPage";
+import StudentQuizPage from "./pages/StudentQuizPage";
+import StudentDashboardPage from "./pages/StudentDashboardPage";
 
 const Layout = () => {
   return (
@@ -28,7 +32,10 @@ export const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/about-us", element: <AboutUsPage /> },
       { path: "/ai-bot", element: <StudentBotPage /> },
-
+      { path: "/dashboard", element: <StudentDashboardPage /> },
+      { path: "/quiz", element: <StudentQuizPage /> },
+      { path: "/teacher/tracking", element: <TeacherListingPage /> },
+      { path: "/teacher/uplaod", element: <TeacherUploadPage /> },
       { path: "/wizardz", element: <WizardzPage /> },
       // {
       //   path: "/member/profile",

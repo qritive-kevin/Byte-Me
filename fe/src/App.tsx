@@ -8,6 +8,7 @@ import { AuthProvider } from "./AuthProvider";
 import useMode from "./hooks/useMode";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { SnackbarProvider } from "notistack";
 
 const queryClient = new QueryClient();
 
@@ -15,14 +16,17 @@ function App() {
   const { theme } = useMode();
 
   return (
-    <ThemeProvider theme={theme}><LocalizationProvider dateAdapter={AdapterDayjs}>
-
-      <CssBaseline />
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
-      </QueryClientProvider></LocalizationProvider>
+    <ThemeProvider theme={theme}>
+      <SnackbarProvider maxSnack={3}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <CssBaseline />
+          <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+              <RouterProvider router={router} />
+            </AuthProvider>
+          </QueryClientProvider>
+        </LocalizationProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

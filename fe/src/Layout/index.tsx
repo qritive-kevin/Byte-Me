@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 // import Sidebar from "../components/sidebar";
 import Footer from "../components/Footer";
 import Navbar from "../components/navbar";
+import Sidebar from "../components/sidebar";
 
 interface LayoutProps {
   children: ReactNode;
@@ -20,17 +21,20 @@ const Layout = ({ children }: LayoutProps) => {
         overflowY: "auto",
       }}
     >
-      <Navbar />
-      <Box
-        sx={{
-          width: "100%",
-          flexGrow: 1,
-          overflowY: "auto",
-          minHeight: "100vh",
-        }}
-      >
-        {children}
-        <Footer />
+      <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#fafbfc" }}>
+        <Sidebar />
+        {/* <Navbar /> */}
+        <Box
+          sx={{
+            width: "100%",
+            flexGrow: 1,
+            overflowY: "auto",
+            minHeight: "100vh",
+          }}
+        >
+          {children}
+          {/* <Footer /> */}
+        </Box>{" "}
       </Box>
     </Box>
   );

@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useState, useEffect, useRef, FormEvent } from "react";
 import MenuIcon from "@mui/icons-material/Menu"; // assuming SidebarTrigger
+import Layout from "../Layout";
 
 type Msg = { role: "user" | "bot"; text: string };
 
@@ -59,89 +60,91 @@ export default function StudentBotPage() {
   const quickReplies = ["Tell me what is my course", "What is my Chapter now"];
 
   return (
-    <Box height="100vh" display="flex" flexDirection="column">
-      {/* Header */}
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        px={2}
-        py={1}
-        borderBottom={1}
-        borderColor="divider"
-      >
-        <IconButton>
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6">My Support Bot</Typography>
-        <Box width={40} />
-      </Box>
-
-      {/* Chat Area */}
-      <Box flex={1} overflow="auto" px={2} py={3}>
-        <Stack spacing={2}>
-          {msgs.length === 0 && (
-            <>
-              <BotBubble>Hey there! I'm Ur Study Bot</BotBubble>
-              <BotBubble>
-                I'm a study Bot. How can I help you today sweetheart?
-              </BotBubble>
-              {quickReplies.map((q) => (
-                <QuickBtn key={q} onClick={() => setInput(q)}>
-                  {q}
-                </QuickBtn>
-              ))}
-            </>
-          )}
-
-          {msgs.map((m, i) =>
-            m.role === "user" ? (
-              <UserBubble key={i}>{m.text}</UserBubble>
-            ) : (
-              <Box key={i}>
-                <BotBubble>{m.text}</BotBubble>
-                <Stack direction="row" gap={1} flexWrap="wrap" mt={1}>
-                  {quickReplies.map((q) => (
-                    <QuickBtn key={q} onClick={() => setInput(q)}>
-                      {q}
-                    </QuickBtn>
-                  ))}
-                </Stack>
-              </Box>
-            )
-          )}
-
-          <div ref={bottomRef} />
-        </Stack>
-      </Box>
-
-      {/* Input Bar */}
-      <Box
-        component="form"
-        onSubmit={send}
-        display="flex"
-        gap={2}
-        p={2}
-        borderTop={1}
-        borderColor="divider"
-      >
-        <TextField
-          fullWidth
-          placeholder="Message…"
-          size="small"
-          value={input}
-          disabled={loading}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={loading || !input.trim()}
+    <Layout>
+      <Box height="100vh" display="flex" flexDirection="column">
+        {/* Header */}
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          px={2}
+          py={1}
+          borderBottom={1}
+          borderColor="divider"
         >
-          {loading ? "…" : "Send"}
-        </Button>
+          <IconButton>
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6">My Support Bot</Typography>
+          <Box width={40} />
+        </Box>
+
+        {/* Chat Area */}
+        <Box flex={1} overflow="auto" px={2} py={3}>
+          <Stack spacing={2}>
+            {msgs.length === 0 && (
+              <>
+                <BotBubble>Hey there! I'm Ur Study Bot</BotBubble>
+                <BotBubble>
+                  I'm a study Bot. How can I help you today sweetheart?
+                </BotBubble>
+                {quickReplies.map((q) => (
+                  <QuickBtn key={q} onClick={() => setInput(q)}>
+                    {q}
+                  </QuickBtn>
+                ))}
+              </>
+            )}
+
+            {msgs.map((m, i) =>
+              m.role === "user" ? (
+                <UserBubble key={i}>{m.text}</UserBubble>
+              ) : (
+                <Box key={i}>
+                  <BotBubble>{m.text}</BotBubble>
+                  <Stack direction="row" gap={1} flexWrap="wrap" mt={1}>
+                    {quickReplies.map((q) => (
+                      <QuickBtn key={q} onClick={() => setInput(q)}>
+                        {q}
+                      </QuickBtn>
+                    ))}
+                  </Stack>
+                </Box>
+              )
+            )}
+
+            <div ref={bottomRef} />
+          </Stack>
+        </Box>
+
+        {/* Input Bar */}
+        <Box
+          component="form"
+          onSubmit={send}
+          display="flex"
+          gap={2}
+          p={2}
+          borderTop={1}
+          borderColor="divider"
+        >
+          <TextField
+            fullWidth
+            placeholder="Message…"
+            size="small"
+            value={input}
+            disabled={loading}
+            onChange={(e) => setInput(e.target.value)}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading || !input.trim()}
+          >
+            {loading ? "…" : "Send"}
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </Layout>
   );
 }
 

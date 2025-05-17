@@ -1,133 +1,164 @@
+import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Avatar,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import MenuIcon from "@mui/icons-material/Menu";
 
-import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-
-import CottageRoundedIcon from "@mui/icons-material/CottageRounded";
-// import PublicRoundedIcon from "@mui/icons-material/PublicRounded";
-import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
-import CoffeeRoundedIcon from "@mui/icons-material/CoffeeRounded";
 const navLinks = [
   {
-    name: "Home",
-    icon: <CottageRoundedIcon />,
-    link: "/",
+    name: "Task",
+    icon: <LeaderboardIcon />,
+    link: "/dashboard",
   },
   {
-    name: "About Us",
-    icon: <CoffeeRoundedIcon />,
-    link: "/about-us",
-  },
-
-  {
-    name: "Profile",
-    icon: <AccountCircleRoundedIcon />,
-    link: "/member/profile",
+    name: "Quiz",
+    icon: <StorefrontIcon />,
+    link: "/quiz",
   },
   {
-    name: "Login",
-    icon: <LogoutRoundedIcon />,
-    link: "/login",
+    name: "Tracking",
+    icon: <StorefrontIcon />,
+    link: "/teacher/tracking",
+  },
+  {
+    name: "Uplaod",
+    icon: <SupportAgentIcon />,
+    link: "/teacher/uplaod",
   },
 ];
 
-const Sidebar = () => {
-  // const { pathname } = useLocation();
+const Sidebar = ({
+  mobileOpen,
+  onMobileClose,
+}: {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  return (
+  // Sidebar content
+  const sidebarContent = (
     <Box
       sx={{
-        backgroundColor: "#161d2f",
-        padding: 2,
-        borderRadius: 2,
+        height: "100%",
         display: "flex",
-        flexDirection: {
-          xs: "row",
-          lg: "column",
-        },
-        alignItems: "center",
+        flexDirection: "column",
         justifyContent: "space-between",
-        width: {
-          sm: "100%",
-          lg: 200,
+        bgcolor: theme.palette.background.paper,
+        p: 2,
+        minWidth: 220,
+      }}
+    >
+      <Box>
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          sx={{
+            fontFamily: theme.typography.h5.fontFamily,
+            color: theme.palette.primary.main,
+            mb: 4,
+            textAlign: "center",
+          }}
+        >
+          Elementary
+        </Typography>
+        <List>
+          {navLinks.map((item) => (
+            <NavLink
+              key={item.name}
+              to={item.link}
+              style={({ isActive }) => ({
+                textDecoration: "none",
+                color: isActive
+                  ? theme.palette.primary.main
+                  : theme.palette.text.primary,
+              })}
+              onClick={isMobile && onMobileClose ? onMobileClose : undefined}
+            >
+              <ListItem
+                button
+                sx={{
+                  borderRadius: 2,
+                  mb: 1,
+                  "&.Mui-selected, &:hover": {
+                    bgcolor: theme.palette.primary.light,
+                  },
+                  transition: "background 0.2s",
+                }}
+              >
+                <ListItemIcon sx={{ color: "inherit" }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.name}
+                  primaryTypographyProps={{
+                    fontFamily: theme.typography.fontFamily,
+                    fontWeight: 600,
+                  }}
+                />
+              </ListItem>
+            </NavLink>
+          ))}
+        </List>
+      </Box>
+    </Box>
+  );
+
+  // Permanent drawer for desktop, temporary for mobile
+  if (isMobile) {
+    return (
+      <Drawer
+        anchor="top"
+        open={!!mobileOpen}
+        onClose={onMobileClose}
+        variant="temporary"
+        ModalProps={{ keepMounted: true }}
+        sx={{
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: "100%",
+            borderRadius: 3,
+            bgcolor: theme.palette.background.paper,
+          },
+        }}
+      >
+        {sidebarContent}
+      </Drawer>
+    );
+  }
+  return (
+    <Drawer
+      variant="permanent"
+      open
+      sx={{
+        width: 240,
+        flexShrink: 0,
+        [`& .MuiDrawer-paper`]: {
+          width: 240,
+          boxSizing: "border-box",
+          borderRight: "none",
+          bgcolor: theme.palette.background.paper,
+          boxShadow: 3,
         },
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: {
-            xs: "row",
-            lg: "column",
-          },
-          gap: 5,
-          alignItems: {
-            xs: "center",
-            lg: "start",
-          },
-          width: "100%",
-        }}
-      >
-        <Typography
-          variant="h5"
-          my={2}
-          fontWeight="bold"
-          sx={{ display: { xs: "none", md: "block" } }}
-        >
-          CinemaApp
-        </Typography>
-
-        <Box
-          sx={{
-            py: {
-              xs: "0px",
-              lg: "4px",
-            },
-            display: "flex",
-            flexDirection: {
-              xs: "row",
-              lg: "column",
-            },
-            gap: 4,
-          }}
-        >
-          {navLinks.map((item) => (
-            <Link
-              key={item.name}
-              to={item.link}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                  color: "white",
-                  textDecoration: "none",
-                }}
-              >
-                <NavLink
-                  to={item.link}
-                  key={item.name}
-                  style={({ isActive }) => ({
-                    display: "flex",
-                    alignItems: "center",
-                    color: isActive ? "#4caf50" : "#512da8",
-                    textDecoration: "none",
-                  })}
-                >
-                  {item.icon}
-                </NavLink>
-
-                <Typography sx={{ display: { xs: "none", md: "block" } }}>
-                  {item.name}
-                </Typography>
-              </Box>
-            </Link>
-          ))}
-        </Box>
-      </Box>
-    </Box>
+      {sidebarContent}
+    </Drawer>
   );
 };
 
