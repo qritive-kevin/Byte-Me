@@ -75,7 +75,7 @@ const Sidebar = ({
             textAlign: "center",
           }}
         >
-          Elementary
+          Byte Me
         </Typography>
         <List>
           {navLinks.map((item) => (

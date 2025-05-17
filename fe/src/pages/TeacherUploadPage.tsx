@@ -7,8 +7,6 @@ import {
   Dialog,
   DialogContent,
   CircularProgress,
-  Card,
-  CardContent,
   IconButton,
   Input,
 } from "@mui/material";
@@ -21,19 +19,25 @@ import Layout from "../Layout";
 import Sidebar from "../components/sidebar";
 
 const validationSchema = Yup.object({
-  file: Yup.mixed()
-    .required("A file is required")
-    .test("fileType", "Only PDF files are allowed", (value) => {
-      return value instanceof File && value.type === "application/pdf";
-    }),
+  title: Yup.string().required("Title is required"),
+  files: Yup.array()
+    .of(
+      Yup.mixed().test("fileType", "Only PDF files are allowed", (value) => {
+        return value instanceof File && value.type === "application/pdf";
+      })
+    )
+    .min(1, "At least one PDF file is required"),
 });
 
 const TeacherUploadPage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
 
-  const formik = useFormik<{ file: File | null }>({
-    initialValues: { file: null },
+  const formik = useFormik<{
+    title: string;
+    files: File[];
+  }>({
+    initialValues: { title: "", files: [] },
     validationSchema,
     onSubmit: (values, { resetForm }) => {
       setOpen(true);
@@ -49,13 +53,16 @@ const TeacherUploadPage = () => {
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      formik.setFieldValue("file", e.target.files[0]);
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      formik.setFieldValue("files", [...formik.values.files, ...newFiles]);
     }
   };
 
-  const handleRemove = () => {
-    formik.setFieldValue("file", null);
+  const handleRemove = (index: number) => {
+    const updatedFiles = [...formik.values.files];
+    updatedFiles.splice(index, 1);
+    formik.setFieldValue("files", updatedFiles);
   };
 
   return (
@@ -64,9 +71,7 @@ const TeacherUploadPage = () => {
       <Box
         sx={{
           maxWidth: 500,
-          mx: "auto",
           mt: 5,
-          bgcolor: "#f5f5f5",
           p: 4,
           borderRadius: 3,
         }}
@@ -77,44 +82,69 @@ const TeacherUploadPage = () => {
         <form onSubmit={formik.handleSubmit}>
           <Box mb={2}>
             <Typography fontWeight="bold" mb={1}>
-              Upload a PDF File
+              Title
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="Enter a title"
+              name="title"
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              error={formik.touched.title && Boolean(formik.errors.title)}
+              helperText={formik.touched.title && formik.errors.title}
+              sx={{ bgcolor: "#fff", borderRadius: 2 }}
+            />
+          </Box>
+          <Box mb={2}>
+            <Typography fontWeight="bold" mb={1}>
+              Upload PDF Files
             </Typography>
             <Input
               type="file"
               onChange={handleFileChange}
               sx={{ display: "none" }}
-              inputProps={{ id: "upload-input", accept: "application/pdf" }}
+              inputProps={{
+                id: "upload-input",
+                accept: "application/pdf",
+                multiple: true,
+              }}
             />
             <label htmlFor="upload-input">
               <Button variant="outlined" component="span">
-                <CloudUploadIcon sx={{ mr: 1 }} /> Choose File
+                <CloudUploadIcon sx={{ mr: 1 }} /> Choose Files
               </Button>
             </label>
-            {formik.errors.file && formik.touched.file && (
+            {formik.errors.files && formik.touched.files && (
               <Typography
                 color="error"
                 variant="caption"
                 display="block"
                 mt={1}
               >
-                {formik.errors.file}
+                {typeof formik.errors.files === "string"
+                  ? formik.errors.files
+                  : "One or more files are invalid."}
               </Typography>
             )}
-            {formik.values.file && (
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                mt={2}
-                p={1}
-                sx={{ bgcolor: "#fff", borderRadius: 1 }}
-              >
-                <Typography variant="body2" noWrap sx={{ maxWidth: 200 }}>
-                  {formik.values.file.name}
-                </Typography>
-                <IconButton onClick={handleRemove}>
-                  <DeleteIcon color="error" />
-                </IconButton>
+            {formik.values.files.length > 0 && (
+              <Box mt={2}>
+                {formik.values.files.map((file, index) => (
+                  <Box
+                    key={index}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    p={1}
+                    sx={{ bgcolor: "#fff", borderRadius: 1, mb: 1 }}
+                  >
+                    <Typography variant="body2" noWrap sx={{ maxWidth: 200 }}>
+                      {file.name}
+                    </Typography>
+                    <IconButton onClick={() => handleRemove(index)}>
+                      <DeleteIcon color="error" />
+                    </IconButton>
+                  </Box>
+                ))}
               </Box>
             )}
           </Box>

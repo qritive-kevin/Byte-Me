@@ -62,6 +62,9 @@ const TeacherListingPage = () => {
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#fafbfc" }}>
       <Sidebar />
       <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 2 }}>
+        <Typography variant="h5" fontWeight="bold" mb={3}>
+          Tracking Student
+        </Typography>
         <Table>
           <TableHead>
             <TableRow>
