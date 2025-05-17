@@ -94,7 +94,7 @@ const StudentDashboardPage = () => {
       <Box sx={{ flex: 1, display: "flex", p: 3 }}>
         <Box sx={{ flex: 2, pr: 3 }}>
           <Typography variant="h4" fontWeight="bold" mb={1}>
-            Hey Lisha,
+            Hey Sunshine,
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" mb={3}>
             Let's find a perfect course
