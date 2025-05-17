@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -8,38 +8,14 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Avatar,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import MenuIcon from "@mui/icons-material/Menu";
-
-const navLinks = [
-  {
-    name: "Task",
-    icon: <LeaderboardIcon />,
-    link: "/dashboard",
-  },
-  {
-    name: "Quiz",
-    icon: <StorefrontIcon />,
-    link: "/quiz",
-  },
-  {
-    name: "Tracking",
-    icon: <StorefrontIcon />,
-    link: "/teacher/tracking",
-  },
-  {
-    name: "Uplaod",
-    icon: <SupportAgentIcon />,
-    link: "/teacher/uplaod",
-  },
-];
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import { useLocation } from "react-router-dom";
 
 const Sidebar = ({
   mobileOpen,
@@ -50,6 +26,21 @@ const Sidebar = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const teacherLinks = [
+    { name: "Tracking", icon: <StorefrontIcon />, link: "/teacher/tracking" },
+    { name: "Uplaod", icon: <SupportAgentIcon />, link: "/teacher/uplaod" },
+    { name: "Logout", icon: <LogoutRoundedIcon />, link: "/" },
+  ];
+
+  const studentLinks = [
+    { name: "Task", icon: <LeaderboardIcon />, link: "/dashboard" },
+    { name: "Logout", icon: <LogoutRoundedIcon />, link: "/" },
+  ];
+
+  const { pathname } = useLocation();
+  const navLinks = pathname.startsWith("/teacher")
+    ? teacherLinks
+    : studentLinks;
 
   // Sidebar content
   const sidebarContent = (

@@ -11,11 +11,18 @@ import {
 } from "@mui/material";
 import Sidebar from "../components/sidebar";
 import courseImg from "../assets/image-avatar.png";
+import { IconButton } from "@mui/material";
+import LockIcon from "@mui/icons-material/Lock";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { useNavigate } from "react-router-dom";
+import historyImg from "../assets/history.png";
+import comImg from "../assets/com.png";
 
 type CourseKey = "Computer" | "History";
 
 type Course = {
   name: CourseKey;
+  img: any;
   chapters: number;
   time: string;
   cost: string;
@@ -35,6 +42,7 @@ type CourseDetails = {
 const courses: Course[] = [
   {
     name: "Computer",
+    img: comImg,
     chapters: 24,
     time: "62hrs",
     cost: "$25",
@@ -42,6 +50,7 @@ const courses: Course[] = [
   },
   {
     name: "History",
+    img: historyImg,
     chapters: 22,
     time: "48hrs",
     cost: "$18",
@@ -87,6 +96,7 @@ const courseDetails: Record<CourseKey, CourseDetails> = {
 
 const StudentDashboardPage = () => {
   const [selectedCourse, setSelectedCourse] = useState<CourseKey | null>(null);
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#fafbfc" }}>
@@ -120,7 +130,7 @@ const StudentDashboardPage = () => {
                   <CardContent>
                     <Box display="flex" alignItems="center" gap={2}>
                       <Avatar
-                        src={courseImg}
+                        src={course.img}
                         alt={course.name}
                         sx={{ width: 48, height: 48, bgcolor: "#fff" }}
                         variant="rounded"
@@ -134,9 +144,6 @@ const StudentDashboardPage = () => {
                         </Typography>
                         <Typography variant="body2">
                           Study Time: {course.time}
-                        </Typography>
-                        <Typography variant="body2">
-                          Cost: {course.cost}
                         </Typography>
                       </Box>
                     </Box>
@@ -163,7 +170,7 @@ const StudentDashboardPage = () => {
         >
           {selectedCourse ? (
             <>
-              <Box display="flex" alignItems="center" mb={2}>
+              {/* <Box display="flex" alignItems="center" mb={2}>
                 <Avatar
                   src={courseDetails[selectedCourse].user.avatar}
                   sx={{ width: 56, height: 56, mr: 2 }}
@@ -177,7 +184,7 @@ const StudentDashboardPage = () => {
                     {courseDetails[selectedCourse].user.progress}
                   </Typography>
                 </Box>
-              </Box>
+              </Box> */}
 
               <Typography variant="h6" color="primary" mb={1}>
                 {selectedCourse}
@@ -186,9 +193,16 @@ const StudentDashboardPage = () => {
                 Table of content
               </Typography>
 
-              {courseDetails[selectedCourse].content.map(
-                (item: string, idx: number) => (
-                  <Box key={item} display="flex" alignItems="center" mb={1}>
+              {courseDetails[selectedCourse].content.map((item, idx) => {
+                const unlocked = idx === 0; // first chapter only
+                return (
+                  <Box
+                    key={item}
+                    display="flex"
+                    alignItems="center"
+                    mb={1}
+                    gap={1}
+                  >
                     <Typography
                       variant="h6"
                       color="primary"
@@ -196,15 +210,36 @@ const StudentDashboardPage = () => {
                     >
                       {String(idx + 1).padStart(2, "0")}
                     </Typography>
-                    <Box>
-                      <Typography variant="body1">{item}</Typography>
+
+                    <Box flex={1}>
+                      <Typography
+                        variant="body1"
+                        color={unlocked ? "text.primary" : "text.disabled"}
+                      >
+                        {item}
+                      </Typography>
                       <Typography variant="caption" color="text.secondary">
                         Study time: {courseDetails[selectedCourse].studyTime}
                       </Typography>
                     </Box>
+
+                    <IconButton
+                      size="small"
+                      disabled={!unlocked}
+                      sx={{
+                        color: unlocked ? "primary.main" : "text.disabled",
+                      }}
+                      onClick={() => unlocked && navigate("/quiz")}
+                    >
+                      {unlocked ? (
+                        <ArrowForwardIosIcon fontSize="small" />
+                      ) : (
+                        <LockIcon fontSize="small" />
+                      )}
+                    </IconButton>
                   </Box>
-                )
-              )}
+                );
+              })}
             </>
           ) : (
             <Typography color="text.secondary" align="center">
