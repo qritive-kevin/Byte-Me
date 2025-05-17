@@ -113,7 +113,12 @@ const StudentQuizPage = () => {
           payload
         );
 
-        setEvaluation(res.data.output || res.data);
+        // setEvaluation(res.data.output || res.data);
+
+        const clean = res.data.output ?? res.data;
+        localStorage.setItem("studyPlan", JSON.stringify(clean));
+        localStorage.setItem("hasStudyPlan", "true");
+        navigate("/study-plan");
       } catch (error) {
         console.error("n8n webhook error:", error);
         setEvaluation(null);
@@ -124,7 +129,7 @@ const StudentQuizPage = () => {
   });
 
   return (
-    <>
+    <Layout>
       <Dialog open={dialogOpen} disableEscapeKeyDown>
         <DialogTitle>Enter Student Info</DialogTitle>
         <DialogContent>
@@ -161,82 +166,78 @@ const StudentQuizPage = () => {
         </DialogContent>
       </Dialog>
 
-      <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#fafbfc" }}>
-        <Sidebar />
-        <Box
-          sx={{
-            flex: 1,
-            maxWidth: 600,
-            mx: "auto",
-            mt: 5,
-            bgcolor: "#f5f5f5",
-            p: 4,
-            borderRadius: 3,
-          }}
-        >
-          <Typography variant="h5" fontWeight="bold" mb={3}>
-            Student Quiz
-          </Typography>
-          <form onSubmit={formik.handleSubmit}>
-            {questions.map((q) => {
-              const name = `q${q.id}` as keyof QuizValues;
-              return (
-                <Box key={q.id} mb={2}>
-                  <Typography fontWeight="bold" mb={1}>
-                    {q.label}
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    name={name}
-                    value={formik.values[name]}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched[name] && Boolean(formik.errors[name])}
-                    helperText={formik.touched[name] && formik.errors[name]}
-                    variant="outlined"
-                    sx={{ bgcolor: "#fff", borderRadius: 2 }}
-                  />
-                </Box>
-              );
-            })}
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ mt: 2, borderRadius: 2, fontWeight: "bold" }}
-              disabled={formik.isSubmitting}
-            >
-              Submit
-            </Button>
-          </form>
-
-          {evaluation && (
-            <Paper sx={{ mt: 4, p: 3, bgcolor: "#fff" }}>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Evaluation Result
-              </Typography>
-              <Typography>
-                <strong>Score:</strong> {evaluation.score}
-              </Typography>
-              <Typography>
-                <strong>Feedback:</strong> {evaluation.feedback}
-              </Typography>
-              <Typography>
-                <strong>Weak Points:</strong>{" "}
-                {evaluation.weak_points?.join(", ")}
-              </Typography>
-              <Typography>
-                <strong>Study Plan:</strong>
-              </Typography>
-              <ul>
-                {evaluation.study_plan?.map((item: string, idx: number) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
-            </Paper>
-          )}
-        </Box>
+      <Box
+        sx={{
+          flex: 1,
+          maxWidth: 600,
+          mx: "auto",
+          mt: 5,
+          bgcolor: "#f5f5f5",
+          p: 4,
+          borderRadius: 3,
+        }}
+      >
+        <Typography variant="h5" fontWeight="bold" mb={3}>
+          Student Quiz
+        </Typography>
+        <form onSubmit={formik.handleSubmit}>
+          {questions.map((q) => {
+            const name = `q${q.id}` as keyof QuizValues;
+            return (
+              <Box key={q.id} mb={2}>
+                <Typography fontWeight="bold" mb={1}>
+                  {q.label}
+                </Typography>
+                <TextField
+                  fullWidth
+                  name={name}
+                  value={formik.values[name]}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched[name] && Boolean(formik.errors[name])}
+                  helperText={formik.touched[name] && formik.errors[name]}
+                  variant="outlined"
+                  sx={{ bgcolor: "#fff", borderRadius: 2 }}
+                />
+              </Box>
+            );
+          })}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2, borderRadius: 2, fontWeight: "bold" }}
+            disabled={formik.isSubmitting}
+          >
+            Submit
+          </Button>
+        </form>
+        {/* 
+        {evaluation && (
+          <Paper sx={{ mt: 4, p: 3, bgcolor: "#fff" }}>
+            <Typography variant="h6" fontWeight="bold" gutterBottom>
+              Evaluation Result
+            </Typography>
+            <Typography>
+              <strong>Score:</strong> {evaluation.score}
+            </Typography>
+            <Typography>
+              <strong>Feedback:</strong> {evaluation.feedback}
+            </Typography>
+            <Typography>
+              <strong>Weak Points:</strong> {evaluation.weak_points?.join(", ")}
+            </Typography>
+            <Typography>
+              <strong>Study Plan:</strong>
+            </Typography>
+            <ul>
+              {evaluation.study_plan?.map((item: string, idx: number) => (
+                <li key={idx}>{item}</li>
+              ))}
+            </ul>
+          </Paper>
+        )} */}
       </Box>
 
       <Dialog open={open}>
@@ -252,7 +253,7 @@ const StudentQuizPage = () => {
           <Typography mt={2}>Evaluating...</Typography>
         </DialogContent>
       </Dialog>
-    </>
+    </Layout>
   );
 };
 

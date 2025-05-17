@@ -16,6 +16,7 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { useLocation } from "react-router-dom";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 
 const Sidebar = ({
   mobileOpen,
@@ -31,9 +32,19 @@ const Sidebar = ({
     { name: "Uplaod", icon: <SupportAgentIcon />, link: "/teacher/uplaod" },
     { name: "Logout", icon: <LogoutRoundedIcon />, link: "/" },
   ];
+  const hasStudyPlan = !!localStorage.getItem("hasStudyPlan");
 
   const studentLinks = [
     { name: "Task", icon: <LeaderboardIcon />, link: "/dashboard" },
+    ...(hasStudyPlan
+      ? [
+          {
+            name: "Study Plan",
+            icon: <AssignmentTurnedInIcon />,
+            link: "/study-plan",
+          },
+        ]
+      : []),
     { name: "Logout", icon: <LogoutRoundedIcon />, link: "/" },
   ];
 

@@ -13,6 +13,7 @@ import TeacherListingPage from "./pages/TeacherListingPage";
 import TeacherUploadPage from "./pages/TeacherUploadPage";
 import StudentQuizPage from "./pages/StudentQuizPage";
 import StudentDashboardPage from "./pages/StudentDashboardPage";
+import StudyPlanPage from "./pages/StudyPlanPage";
 
 const Layout = () => {
   return (
@@ -37,6 +38,8 @@ export const router = createBrowserRouter([
       { path: "/teacher/tracking", element: <TeacherListingPage /> },
       { path: "/teacher/uplaod", element: <TeacherUploadPage /> },
       { path: "/wizardz", element: <WizardzPage /> },
+      { path: "/study-plan", element: <StudyPlanPage /> },
+
       // {
       //   path: "/member/profile",
       //   element: (
