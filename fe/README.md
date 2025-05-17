@@ -1,7 +1,8 @@
-# byte-me
+# edu-qwen
 
-A travel webpage which created by React, Mui and rest API (as backend) \
-🔗 : https://xxxx. vercel.app \
+Problem Statement
+Why always happened school bully? Is the teacher doesn't caring it? No, Teacher have too many task and student to take care until they sometime ignore the student don't know the condition of the student, and cannot take personalized customized appropriate educate method.
+So, let us introduce our solution, our solution is just prepared for this situation we personalized study plan to all student, so there have no student gonna be ignored.
 
 ## Available Scripts
 

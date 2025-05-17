@@ -29,7 +29,7 @@ const HomePage = () => {
         align="center"
         sx={{ mb: 2, textShadow: "0 2px 4px rgba(0,0,0,0.06)" }}
       >
-        Byte Me
+        Edu Qwen
       </Typography>
       <Typography
         variant="subtitle1"

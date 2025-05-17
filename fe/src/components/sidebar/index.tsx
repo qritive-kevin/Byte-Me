@@ -77,7 +77,7 @@ const Sidebar = ({
             textAlign: "center",
           }}
         >
-          Byte Me
+          Edu Qwen
         </Typography>
         <List>
           {navLinks.map((item) => (
