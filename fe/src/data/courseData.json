@@ -1,0 +1,57 @@
+{
+  "courses": [
+    {
+      "name": "Computer",
+      "img": "comImg",
+      "chapters": 24,
+      "time": "62hrs",
+      "cost": "$25",
+      "color": "#e0f7fa"
+    },
+    {
+      "name": "History",
+      "img": "historyImg",
+      "chapters": 22,
+      "time": "48hrs",
+      "cost": "$18",
+      "color": "#ffe0b2"
+    }
+  ],
+
+  "details": {
+    "Computer": {
+      "user": {
+        "name": "Lisha Lokwani",
+        "avatar": "courseImg",
+        "progress": "Progress Report"
+      },
+      "content": [
+        "Introduction to Computer",
+        "Computer Hardware",
+        "System Software",
+        "Communications Literacy",
+        "Software Development",
+        "Networks and Security",
+        "Utility Software"
+      ],
+      "studyTime": "34 min"
+    },
+
+    "History": {
+      "user": {
+        "name": "Wakanda Forever",
+        "avatar": "courseImg",
+        "progress": "Progress Report"
+      },
+      "content": [
+        "Ancient Civilizations",
+        "Medieval Times",
+        "Renaissance & Exploration",
+        "Industrial Revolution",
+        "World Wars Overview",
+        "Modern History"
+      ],
+      "studyTime": "125 min"
+    }
+  }
+}

@@ -1,102 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
   Grid,
   Card,
   CardContent,
-  InputBase,
-  Paper,
   Avatar,
+  IconButton,
+  CircularProgress,
 } from "@mui/material";
 import Sidebar from "../components/sidebar";
-import courseImg from "../assets/image-avatar.png";
-import { IconButton } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useNavigate } from "react-router-dom";
-import historyImg from "../assets/history.png";
-import comImg from "../assets/com.png";
-
-type CourseKey = "Computer" | "History";
-
-type Course = {
-  name: CourseKey;
-  img: any;
-  chapters: number;
-  time: string;
-  cost: string;
-  color: string;
-};
-
-type CourseDetails = {
-  user: {
-    name: string;
-    avatar: string;
-    progress: string;
-  };
-  content: string[];
-  studyTime: string;
-};
-
-const courses: Course[] = [
-  {
-    name: "Computer",
-    img: comImg,
-    chapters: 24,
-    time: "62hrs",
-    cost: "$25",
-    color: "#e0f7fa",
-  },
-  {
-    name: "History",
-    img: historyImg,
-    chapters: 22,
-    time: "48hrs",
-    cost: "$18",
-    color: "#ffe0b2",
-  },
-];
-
-const courseDetails: Record<CourseKey, CourseDetails> = {
-  Computer: {
-    user: {
-      name: "Lisha Lokwani",
-      avatar: courseImg,
-      progress: "Progress Report",
-    },
-    content: [
-      "Introduction to Computer",
-      "Computer Hardware",
-      "System Software",
-      "Communications Literacy",
-      "Software Development",
-      "Networks and Security",
-      "Utility Software",
-    ],
-    studyTime: "34 min",
-  },
-  History: {
-    user: {
-      name: "Wakanda Forever",
-      avatar: courseImg,
-      progress: "Progress Report",
-    },
-    content: [
-      "Ancient Civilizations",
-      "Medieval Times",
-      "Renaissance & Exploration",
-      "Industrial Revolution",
-      "World Wars Overview",
-      "Modern History",
-    ],
-    studyTime: "125 min",
-  },
-};
+import { courseService, Course } from "../services/courseService";
 
 const StudentDashboardPage = () => {
-  const [selectedCourse, setSelectedCourse] = useState<CourseKey | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const courses = await courseService.getAllCourses();
+        setCourses(courses);
+        setError(null);
+      } catch (error: any) {
+        setError(
+          error.message || "Failed to fetch courses. Please try again later."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  const handleCourseSelect = (course: Course) => {
+    setSelectedCourse(course); // no API call needed
+    courseService
+      .updateCourseProgress(course.name, "in-progress")
+      .catch(() => {});
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#fafbfc" }}>
+        <Sidebar />
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#fafbfc" }}>
+        <Sidebar />
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Typography color="error">{error}</Typography>
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#fafbfc" }}>
@@ -118,14 +103,14 @@ const StudentDashboardPage = () => {
                     background: course.color,
                     borderRadius: 3,
                     cursor: "pointer",
-                    boxShadow: selectedCourse === course.name ? 4 : 1,
+                    boxShadow: selectedCourse?.name === course.name ? 4 : 1,
                     border:
-                      selectedCourse === course.name
+                      selectedCourse?.name === course.name
                         ? "2px solid #0042DC"
                         : "none",
                     transition: "0.2s",
                   }}
-                  onClick={() => setSelectedCourse(course.name)}
+                  onClick={() => handleCourseSelect(course)}
                 >
                   <CardContent>
                     <Box display="flex" alignItems="center" gap={2}>
@@ -170,31 +155,15 @@ const StudentDashboardPage = () => {
         >
           {selectedCourse ? (
             <>
-              {/* <Box display="flex" alignItems="center" mb={2}>
-                <Avatar
-                  src={courseDetails[selectedCourse].user.avatar}
-                  sx={{ width: 56, height: 56, mr: 2 }}
-                />
-                <Box>
-                  <Typography fontWeight="bold">
-                    {courseDetails[selectedCourse].user.name}
-                  </Typography>
-
-                  <Typography variant="caption" color="primary">
-                    {courseDetails[selectedCourse].user.progress}
-                  </Typography>
-                </Box>
-              </Box> */}
-
               <Typography variant="h6" color="primary" mb={1}>
-                {selectedCourse}
+                {selectedCourse.name}
               </Typography>
               <Typography variant="subtitle2" mb={2}>
                 Table of content
               </Typography>
 
-              {courseDetails[selectedCourse].content.map((item, idx) => {
-                const unlocked = idx === 0; // first chapter only
+              {selectedCourse.details.content.map((item, idx) => {
+                const unlocked = idx === 0;
                 return (
                   <Box
                     key={item}
@@ -219,7 +188,7 @@ const StudentDashboardPage = () => {
                         {item}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        Study time: {courseDetails[selectedCourse].studyTime}
+                        Study time: {selectedCourse.details.studyTime}
                       </Typography>
                     </Box>
 
@@ -240,6 +209,61 @@ const StudentDashboardPage = () => {
                   </Box>
                 );
               })}
+
+              {selectedCourse.extraContent.length > 0 && (
+                <>
+                  <Typography variant="subtitle2" mt={3} mb={2}>
+                    Additional Materials
+                  </Typography>
+                  {selectedCourse.extraContent.map((item, idx) => (
+                    <Box
+                      key={item.title}
+                      display="flex"
+                      alignItems="center"
+                      mb={1}
+                      gap={1}
+                    >
+                      <Typography
+                        variant="h6"
+                        color="primary"
+                        sx={{ minWidth: 32, fontWeight: 700 }}
+                      >
+                        {String(idx + 1).padStart(2, "0")}
+                      </Typography>
+
+                      <Box flex={1}>
+                        <Typography variant="body1">{item.title}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          Study time: {item.studyTime}
+                        </Typography>
+                        {item.filePath && (
+                          <Typography
+                            variant="caption"
+                            color="primary"
+                            display="block"
+                          >
+                            <a
+                              href={item.filePath}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View PDF
+                            </a>
+                          </Typography>
+                        )}
+                      </Box>
+
+                      <IconButton
+                        size="small"
+                        sx={{ color: "primary.main" }}
+                        onClick={() => navigate("/quiz")}
+                      >
+                        <ArrowForwardIosIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  ))}
+                </>
+              )}
             </>
           ) : (
             <Typography color="text.secondary" align="center">
